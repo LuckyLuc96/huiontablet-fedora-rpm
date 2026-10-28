@@ -16,6 +16,7 @@ BuildArch:      x86_64
 BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  xz
+BuildRequires: patchelf
 
 Requires(pre):  shadow-utils
 Requires:       libX11
@@ -72,6 +73,10 @@ mkdir -p %{buildroot}
 cd %{_builddir}/%{name}-%{version}
 cp -a usr %{buildroot}/
 cp -a etc %{buildroot}/
+# Remove invalid RUNPATH entries from Huion's prebuilt binaries.
+patchelf --remove-rpath %{buildroot}/usr/lib/huiontablet/huionCore
+patchelf --remove-rpath %{buildroot}/usr/lib/huiontablet/huiontablet
+patchelf --remove-rpath %{buildroot}/usr/lib/huiontablet/libs/libQtSessionLib.so.1.0.0
 rm -f %{buildroot}/usr/lib/huiontablet/.DriverUI.pid
 rm -f %{buildroot}/usr/lib/huiontablet/.HuionCore.pid
 rm -f %{buildroot}/usr/lib/huiontablet/.huion.log
